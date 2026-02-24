@@ -51,7 +51,7 @@ fixnow/
 
 ---
 
-## 🔐 Controle de Acesso
+## Controle de Acesso
 
 O sistema possui três níveis de acesso:
 
