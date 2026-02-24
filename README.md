@@ -20,10 +20,13 @@ O sistema permite:
 
 O projeto está dividido em:
 
+```
 fixnow/
- backend/ # API REST (FastAPI + SQLModel + PostgreSQL)
- frontend/ # Interface (React + Vite)
- README.md
+│
+├── backend/     # API REST (FastAPI + SQLModel + PostgreSQL)
+├── frontend/    # Interface (React + Vite)
+└── README.md
+```
 
 ### Backend
 
