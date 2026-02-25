@@ -121,8 +121,5 @@ Este projeto foi desenvolvido como:
 - Base estruturada para futura evolução como SaaS
 
 ### Autor
-
 Marcus Brandão
-
-Backend Developer - Python / APIs REST
-
+Backend Dev (Python - APIs REST)
