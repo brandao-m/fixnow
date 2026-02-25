@@ -124,6 +124,5 @@ Este projeto foi desenvolvido como:
 
 Marcus Brandão
 
-
 Backend Developer - Python / APIs REST
 
