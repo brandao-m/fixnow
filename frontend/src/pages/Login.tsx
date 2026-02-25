@@ -1,13 +1,38 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from '../api/api';
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const navigate = useNavigate();
 
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e:React.FormEvent){
     e.preventDefault();
-    console.log(email, senha);
-  }
+    
+    try {
+      const response = await api.post(
+        '/usuarios/login',
+        new URLSearchParams({
+          username: email,
+          password: senha,
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }  
+      );
+
+      const { access_token } = response.data;
+      
+      localStorage.setItem('token', access_token);
+
+      navigate('/dashboard');
+    } catch (error) {
+      alert('Email ou senha inválidos');
+    }
+}
 
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center px-4">
@@ -16,13 +41,11 @@ export default function Login() {
         <h1 className="text-3xl font-bold text-blue-500 mb-2 text-center">
           FixNow
         </h1>
-
-        <p className="text-gray-400 text-center mb-8">
+        <p className="text-gray-400 text-center mb-1">
           Plataforma de gestão de chamados
         </p>
-
         <form onSubmit={handleLogin} className="space-y-5">
-          
+    
           <div>
             <label className="block text-sm text-gray-300 mb-2">
               Email
@@ -35,7 +58,6 @@ export default function Login() {
               required
             />
           </div>
-
           <div>
             <label className="block text-sm text-gray-300 mb-2">
               Senha
@@ -48,7 +70,6 @@ export default function Login() {
               required
             />
           </div>
-
           <button
             type="submit"
             className="w-full bg-blue-600 text-white hover:bg-blue-700 py-2 rounded-lg font-semibold transition"
