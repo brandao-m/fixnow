@@ -63,6 +63,15 @@ export default function Dashboard() {
     }
   }
 
+  async function finalizarChamado(id: number){
+    try {
+      await api.put(`/chamados/${id}/finalizar`);
+      await carregarChamados();
+    } catch (error) {
+      alert('Erro ao finalizar chamado')
+    }
+  }
+
   function renderStatusBadge(status: string) {
     switch (status) {
       case "ABERTO":
@@ -198,8 +207,18 @@ export default function Dashboard() {
                 {chamado.descricao}
               </p>
 
-              <div className="mt-4">
+              <div className="mt-4 flex items-center gap-4">
                 {renderStatusBadge(chamado.status)}
+
+                {user?.role === "tecnico" &&
+                  chamado.status === "EM_ANDAMENTO" && (
+                    <button
+                      onClick={() => finalizarChamado(chamado.id)}
+                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-semibold transition"
+                    >
+                      Finalizar
+                    </button>
+                  )}
               </div>
             </div>
           ))}
