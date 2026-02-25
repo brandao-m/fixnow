@@ -9,10 +9,10 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Login */}
+        {/* LOGIN */}
         <Route path="/" element={<Login />} />
 
-        {/* Dashboard protegido */}
+        {/* DASHBOARD PROTEGIDO */}
         <Route
           path="/dashboard"
           element={
@@ -22,7 +22,7 @@ function App() {
           }
         />
 
-        {/* Novo chamado protegido */}
+        {/* NOVO CHAMADO PROTEGIDO */}
         <Route
           path="/novo-chamado"
           element={
