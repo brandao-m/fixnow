@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
+import Layout from '../components/layout';
 
 interface Chamado {
   id: number;
@@ -62,71 +63,84 @@ export default function Dashboard() {
   }
 
   return (
-    <div style={{ padding: 30 }}>
-      <h2>Dashboard</h2>
+    <Layout user={user}>
 
-      {user && (
-        <p>
-          Bem-vindo, <strong>{user.nome}</strong> | Perfil: {user.role}
-        </p>
-      )}
+      <h2 className="text-3xl font-bold mb-6 text-blue-400">
+        Dashboard
+      </h2>
 
-      {user?.role === "cliente" && (
-        <div style={{ marginBottom: 30 }}>
-          <h3>Novo Chamado</h3>
+      {user?.role === 'cliente' && (
+        <div className="bg-gray-900 p-6 rounded-xl shadow-lg mb-10 border border-gray-800">
+          <h3 className="text-xl font-semibold mb-4">
+            Novo Chamado
+          </h3>
 
+          <div className="flex flex-col gap-3">
           <input
+            className="bg-gray-800 border border-gray-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Título"
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
           />
 
-          <br />
-
           <input
+            className="bg-gray-800 border border-gray-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Descrição"
             value={descricao}
             onChange={(e) => setDescricao(e.target.value)}
           />
 
-          <br />
-
           <input
+            className="bg-gray-800 border border-gray-700 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Endereço"
             value={endereco}
             onChange={(e) => setEndereco(e.target.value)}
           />
 
-          <br />
-
-          <button onClick={criarChamado}>
+          <button
+            onClick={criarChamado}
+            className="bg-blue-600 hover:bg-blue-700 transition rounded-md py-2 font-semibold"
+          >
             Criar Chamado
           </button>
         </div>
-      )}
+      </div>
+    )}
 
-      <h3>Chamados</h3>
+    <h3 className="text-2xl font-semibold mb-4">
+      Chamados
+    </h3>
 
-      {chamados.length === 0 ? (
-        <p>Nenhum chamado encontrado.</p>
-      ) : (
-        chamados.map((chamado) => (
+    {chamados.length === 0 ? (
+      <p className="text-gray-500">Nenhum chamado encontrado.</p>
+    ) : (
+      <div className="grid gap-4">
+        {chamados.map((chamado) => (
           <div
             key={chamado.id}
-            style={{
-              border: "1px solid #ddd",
-              padding: 15,
-              marginBottom: 15,
-              borderRadius: 8,
-              boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
-            }}
+            className="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-md hover:shadow-xl transition"
           >
-            <h3>{chamado.titulo}</h3>
-            <p>{chamado.descricao}</p>
-            <p><strong>Status:</strong> {chamado.status}</p>
+            <h3 className="text-lg font-semibold text-blue-400">
+              {chamado.titulo}
+            </h3>
+
+            <p className="text-gray-400 mt-2">
+              {chamado.descricao}
+            </p>
+
+            <p className="mt-3 text-sm">
+              <span className="font-semibold">Status:</span>{" "}
+              <span className="text-green-400">
+                {chamado.status}
+              </span>
+            </p>
           </div>
-        ))
-      )}
-    </div>
-  );
-}
+        ))}
+      </div>
+    )}
+
+  </Layout>
+)};
+
+
+
