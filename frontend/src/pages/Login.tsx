@@ -29,7 +29,7 @@ export default function Login() {
             </label>
             <input
               type="email"
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400 transition"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -42,7 +42,7 @@ export default function Login() {
             </label>
             <input
               type="password"
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400 transition"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               required
@@ -51,7 +51,7 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-lg font-semibold transition"
+            className="w-full bg-blue-600 text-white hover:bg-blue-700 py-2 rounded-lg font-semibold transition"
           >
             Entrar
           </button>
