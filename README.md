@@ -26,14 +26,13 @@ O sistema permite:
 ## Arquitetura
 
 O projeto está dividido em duas camadas principais:
-
 ```
 fixnow/
 │
 ├── backend/ # API REST (FastAPI + SQLModel + PostgreSQL)
 ├── frontend/ # Interface (React + TypeScript + Vite)
 └── README.md
----
+```
 
 ## Backend
 
