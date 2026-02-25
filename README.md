@@ -1,10 +1,18 @@
 # FixNow
 
-Plataforma fullstack para gestão de chamados técnicos com autenticação JWT e controle de acesso por perfil.
+Plataforma fullstack para gestão de chamados técnicos, com autenticação JWT e controle de acesso por perfil.
+
+---
 
 ## Visão Geral
 
-FixNow é um sistema de gerenciamento de chamados técnicos desenvolvido com arquitetura moderna e foco em segurança, separação de responsabilidades e escalabilidade futura.
+O FixNow é um sistema de gerenciamento de chamados técnicos desenvolvido com foco em:
+
+- Arquitetura organizada
+- Separação clara de responsabilidades
+- Segurança com autenticação JWT
+- Controle de acesso por perfil
+- Base sólida para evolução futura como SaaS
 
 O sistema permite:
 
@@ -12,42 +20,53 @@ O sistema permite:
 - Central administrativa atribuir técnicos
 - Técnicos finalizarem atendimentos
 - Controle de acesso por perfil (CLIENTE, TECNICO, CENTRAL)
-- Autenticação via JWT
 
 ---
 
 ## Arquitetura
 
-O projeto está dividido em:
+O projeto está dividido em duas camadas principais:
 
 ```
 fixnow/
 │
-├── backend/     # API REST (FastAPI + SQLModel + PostgreSQL)
-├── frontend/    # Interface (React + Vite)
+├── backend/ # API REST (FastAPI + SQLModel + PostgreSQL)
+├── frontend/ # Interface (React + TypeScript + Vite)
 └── README.md
-```
+---
 
-### Backend
+## Backend
 
-- FastAPI
-- SQLModel
-- PostgreSQL
-- JWT Authentication
-- OAuth2 Password Flow
-- Arquitetura em camadas:
-  - routers
-  - services
-  - models
-  - schemas
-  - core
+Tecnologias utilizadas:
 
-### Frontend
+- FastAPI  
+- SQLModel  
+- PostgreSQL  
+- JWT Authentication  
+- OAuth2 Password Flow  
 
-- React
-- Vite
-- Consumo de API via token JWT
-- Renderização dinâmica baseada no perfil do usuário
+Organização em camadas:
+
+- `routers` → definição dos endpoints
+- `services` → regras de negócio
+- `models` → entidades do banco
+- `schemas` → validação e serialização
+- `core` → segurança e configurações
+
+As transições de status e regras críticas são controladas na camada de service.
+
+---
+
+## Frontend
+
+Tecnologias utilizadas:
+
+- React + TypeScript  
+- Vite  
+- TailwindCSS  
+- Axios  
+
+O frontend consome a API via token JWT e renderiza a interface dinamicamente conforme o perfil do usuário autenticado.
 
 ---
 
@@ -55,19 +74,24 @@ fixnow/
 
 O sistema possui três níveis de acesso:
 
-- CLIENTE → Pode abrir e visualizar seus próprios chamados
-- TECNICO → Visualiza apenas chamados atribuídos a ele
-- CENTRAL → Pode visualizar todos os chamados e atribuir técnicos
+**CLIENTE**  
+→ Pode abrir e visualizar apenas seus próprios chamados  
+
+**TECNICO**  
+→ Visualiza apenas chamados atribuídos a ele  
+→ Pode finalizar atendimentos  
+
+**CENTRAL**  
+→ Pode visualizar todos os chamados  
+→ Pode atribuir técnicos  
 
 ---
 
 ## Fluxo Operacional
 
-1. Cliente cria chamado (status: ABERTO)
-2. Central atribui técnico (status: EM_ANDAMENTO)
-3. Técnico finaliza chamado (status: CONCLUIDO)
-
-Transições de status são controladas no service layer.
+1. Cliente cria chamado → `ABERTO`
+2. Central atribui técnico → `EM_ANDAMENTO`
+3. Técnico finaliza atendimento → `CONCLUIDO`
 
 ---
 
@@ -90,27 +114,13 @@ npm run dev
 ```
 ---
 
-## Objetivo do Projeto
+### Objetivo do Projeto
 
 Este projeto foi desenvolvido como:
-
 - Demonstração de arquitetura backend profissional
-- Exercício de controle de autenticação e autorização
-- Base para evolução futura para modelo SaaS
+- Exercício prático de autenticação e autorização
+- Base estruturada para futura evolução como SaaS
 
----
-
-## Roadmap Futuro
-
-- Multiempresa (multi-tenant)
-- Deploy em produção
-- Recuperação de senha
-- Logs de auditoria
-- Interface aprimorada
-- Modelo SaaS
-
----
-
-## Autor
-Marcus Brandão  
+### Autor
+Marcus Brandão
 Backend Developer (Python / APIs REST)
