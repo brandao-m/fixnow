@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import Layout from "../components/layout";
 
@@ -64,39 +63,65 @@ export default function Dashboard() {
     }
   }
 
+  function renderStatusBadge(status: string) {
+    switch (status) {
+      case "ABERTO":
+        return (
+          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-red-500/20 text-red-400">
+            Aberto
+          </span>
+        );
+      case "EM_ANDAMENTO":
+        return (
+          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-500/20 text-yellow-400">
+            Em andamento
+          </span>
+        );
+      case "CONCLUIDO":
+        return (
+          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400">
+            Concluído
+          </span>
+        );
+      default:
+        return null;
+    }
+  }
+
   return (
     <Layout user={user}>
       {/* Métricas */}
-<div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-  <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-    <p className="text-gray-400 text-sm">Total</p>
-    <h3 className="text-2xl font-bold text-white">
-      {chamados.length}
-    </h3>
-  </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+          <p className="text-gray-400 text-sm">Total</p>
+          <h3 className="text-2xl font-bold text-white">
+            {chamados.length}
+          </h3>
+        </div>
 
-  <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-    <p className="text-gray-400 text-sm">Abertos</p>
-    <h3 className="text-2xl font-bold text-yellow-400">
-      {chamados.filter(c => c.status === "ABERTO").length}
-    </h3>
-  </div>
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+          <p className="text-gray-400 text-sm">Abertos</p>
+          <h3 className="text-2xl font-bold text-yellow-400">
+            {chamados.filter(c => c.status === "ABERTO").length}
+          </h3>
+        </div>
 
-  <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-    <p className="text-gray-400 text-sm">Em andamento</p>
-    <h3 className="text-2xl font-bold text-blue-400">
-      {chamados.filter(c => c.status === "EM_ANDAMENTO").length}
-    </h3>
-  </div>
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+          <p className="text-gray-400 text-sm">Em andamento</p>
+          <h3 className="text-2xl font-bold text-blue-400">
+            {chamados.filter(c => c.status === "EM_ANDAMENTO").length}
+          </h3>
+        </div>
 
-  <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-    <p className="text-gray-400 text-sm">Concluídos</p>
-    <h3 className="text-2xl font-bold text-green-400">
-      {chamados.filter(c => c.status === "CONCLUIDO").length}
-    </h3>
-  </div>
-</div>
-      {/* Header do Dashboard */}
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+          <p className="text-gray-400 text-sm">Concluídos</p>
+          <h3 className="text-2xl font-bold text-green-400">
+            {chamados.filter(c => c.status === "CONCLUIDO").length}
+          </h3>
+        </div>
+      </div>
+
+      {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-blue-400">
           Dashboard
@@ -151,7 +176,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Lista de chamados */}
+      {/* Lista */}
       <h3 className="text-2xl font-semibold mb-4">
         Chamados
       </h3>
@@ -173,12 +198,9 @@ export default function Dashboard() {
                 {chamado.descricao}
               </p>
 
-              <p className="mt-3 text-sm">
-                <span className="font-semibold">Status:</span>{" "}
-                <span className="text-green-400">
-                  {chamado.status}
-                </span>
-              </p>
+              <div className="mt-4">
+                {renderStatusBadge(chamado.status)}
+              </div>
             </div>
           ))}
         </div>
