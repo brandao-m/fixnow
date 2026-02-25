@@ -66,6 +66,36 @@ export default function Dashboard() {
 
   return (
     <Layout user={user}>
+      {/* Métricas */}
+<div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+  <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+    <p className="text-gray-400 text-sm">Total</p>
+    <h3 className="text-2xl font-bold text-white">
+      {chamados.length}
+    </h3>
+  </div>
+
+  <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+    <p className="text-gray-400 text-sm">Abertos</p>
+    <h3 className="text-2xl font-bold text-yellow-400">
+      {chamados.filter(c => c.status === "ABERTO").length}
+    </h3>
+  </div>
+
+  <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+    <p className="text-gray-400 text-sm">Em andamento</p>
+    <h3 className="text-2xl font-bold text-blue-400">
+      {chamados.filter(c => c.status === "EM_ANDAMENTO").length}
+    </h3>
+  </div>
+
+  <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+    <p className="text-gray-400 text-sm">Concluídos</p>
+    <h3 className="text-2xl font-bold text-green-400">
+      {chamados.filter(c => c.status === "CONCLUIDO").length}
+    </h3>
+  </div>
+</div>
       {/* Header do Dashboard */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-blue-400">
