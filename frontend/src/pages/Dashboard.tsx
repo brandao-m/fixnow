@@ -25,6 +25,8 @@ export default function Dashboard() {
   const [descricao, setDescricao] = useState("");
   const [endereco, setEndereco] = useState("");
 
+  const [tecnicos, setTecnicos] = useState<User[]>([]);
+
   async function carregarChamados() {
     const response = await api.get("/chamados/");
     setChamados(response.data);
@@ -34,15 +36,24 @@ export default function Dashboard() {
     async function carregarDados() {
       try {
         const userResponse = await api.get("/usuarios/me");
-        setUser(userResponse.data);
+        const usuarioLogado = userResponse.data;
+
+        setUser(usuarioLogado);
+
         await carregarChamados();
+
+        // SE FOR CENTRAL, BUSCA TECNICOS
+        if (usuarioLogado.role === 'central') {
+          const responseTecnicos = await api.get('/usuarios/tecnicos');
+          setTecnicos(responseTecnicos.data);
+        }
+
       } catch (error) {
-        alert("Erro ao carregar dados");
+        alert('Erro ao carregar dados')
       }
     }
-
-    carregarDados();
-  }, []);
+      carregarDados();
+    }, []);
 
   async function criarChamado() {
     try {
@@ -62,6 +73,15 @@ export default function Dashboard() {
       alert("Erro ao criar chamado");
     }
   }
+
+  async function atribuirTecnico(chamadoId: number, tecnicoId: number) {
+  try {
+    await api.put(`/chamados/${chamadoId}/atribuir/${tecnicoId}`);
+    await carregarChamados();
+  } catch (error) {
+    alert("Erro ao atribuir técnico");
+  }
+}
 
   async function finalizarChamado(id: number){
     try {
@@ -99,7 +119,7 @@ export default function Dashboard() {
 
   return (
     <Layout user={user}>
-      {/* Métricas */}
+      {/* MÉTRICAS */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
           <p className="text-gray-400 text-sm">Total</p>
@@ -130,7 +150,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Header */}
+      {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-3xl font-bold text-blue-400">
           Dashboard
@@ -146,7 +166,7 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Formulário */}
+      {/* FORMULÁRIO */}
       {user?.role === "cliente" && mostrarFormulario && (
         <div className="bg-gray-900 p-6 rounded-xl shadow-lg mb-10 border border-gray-800">
           <h3 className="text-xl font-semibold mb-4">
@@ -185,7 +205,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Lista */}
+      {/* LISTA */}
       <h3 className="text-2xl font-semibold mb-4">
         Chamados
       </h3>
@@ -209,6 +229,29 @@ export default function Dashboard() {
 
               <div className="mt-4 flex items-center gap-4">
                 {renderStatusBadge(chamado.status)}
+
+              {/* CENTRAL ATRIBUI TECNICO */}
+              {user?.role === "central" && chamado.status === "ABERTO" && (
+                <div className="mt-4">
+                  <select
+                    onChange={(e) =>
+                      atribuirTecnico(chamado.id, Number(e.target.value))
+                    }
+                    defaultValue=""
+                    className="bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-md"
+                  >
+                    <option value="" disabled>
+                      Selecionar técnico
+                    </option>
+
+                    {tecnicos.map((tecnico) => (
+                      <option key={tecnico.id} value={tecnico.id}>
+                        {tecnico.nome}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+)}    
 
                 {user?.role === "tecnico" &&
                   chamado.status === "EM_ANDAMENTO" && (
