@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import Layout from "../components/layout";
 
@@ -17,6 +18,8 @@ interface User {
 }
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+
   const [chamados, setChamados] = useState<Chamado[]>([]);
   const [user, setUser] = useState<User | null>(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -217,7 +220,8 @@ export default function Dashboard() {
           {chamados.map((chamado) => (
             <div
               key={chamado.id}
-              className="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-md hover:shadow-xl transition"
+              className="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-md hover:shadow-xl transition cursor-pointer"
+              onClick={() => navigate(`/chamados/${chamado.id}`)}
             >
               <h3 className="text-lg font-semibold text-blue-400">
                 {chamado.titulo}

@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import NovoChamado from "./pages/NovoChamado";
 import ProtectedRoute from "./components/ProtectedRoute";
+import DetalheChamado from "./pages/DetalheChamado";
 
 function App() {
   return (
@@ -18,6 +19,16 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* DETALHES DOS CHAMADOS */}
+        <Route
+          path='/chamados/:id'
+          element={
+            <ProtectedRoute>
+              <DetalheChamado />
             </ProtectedRoute>
           }
         />
