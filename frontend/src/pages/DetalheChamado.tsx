@@ -9,7 +9,7 @@ interface Chamado {
   descricao: string;
   endereco: string;
   status: string;
-  tecnico_id?: number;
+  tecnico_id?: number | null;
 }
 
 interface User {
@@ -24,6 +24,7 @@ export default function DetalheChamado() {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
   const [tecnicos, setTecnicos] = useState<User[]>([]);
+  const [tecnicoAtribuido, setTecnicoAtribuido] = useState<User | null>(null);
 
   async function finalizarChamado() {
     try {
@@ -48,7 +49,16 @@ export default function DetalheChamado() {
     const encontrado = response.data.find(
       (c: Chamado) => c.id === Number(id)
     );
+
     setChamado(encontrado);
+
+    if (encontrado?.tecnico_id) {
+      const responseTecnicos = await api.get('/usuarios/tecnicos');
+      const tecnico = responseTecnicos.data.find(
+        (t: User) => t.id === encontrado.tecnico_id
+      );
+      setTecnicoAtribuido(tecnico || null);
+    }
   }
 
   useEffect(() => {
@@ -76,48 +86,76 @@ export default function DetalheChamado() {
     );
   }
 
+  function renderStatusColor(status: string) {
+  switch (status) {
+    case "ABERTO":
+      return "text-red-400";
+    case "EM_ANDAMENTO":
+      return "text-yellow-400";
+    case "CONCLUIDO":
+      return "text-green-400";
+    default:
+      return "text-blue-400";
+  }
+}
+
   return (
     <Layout user={user}> 
       <h2 className="text-3xl font-bold mb-6 text-blue-400">
         Detalhes do Chamado
       </h2>
 
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-4">
-        <div>
-            <button
-                onClick={() => navigate("/dashboard")}
-                className="mb-6 text-blue-400 font-bold hover:text-blue-300 transition"
-            >
-                ← Voltar
-           </button>
-          <p className="text-gray-400 text-sm">Título</p>
-          <p className="text-white text-lg">{chamado.titulo}</p>
-        </div>
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-6">
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-6">
 
-        <div>
-          <p className="text-gray-400 text-sm">Descrição</p>
-          <p className="text-white">{chamado.descricao}</p>
-        </div>
+          {/* TÍTULO */}
+          <div>
+            <h3 className="text-2xl font-bold text-white">
+              {chamado.titulo}
+            </h3>
+          </div>
 
-        <div>
-          <p className="text-gray-400 text-sm">Endereço</p>
-          <p className="text-white">{chamado.endereco}</p>
-        </div>
+          {/* STATUS + TÉCNICO */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-t border-gray-800 pt-4">
 
-        <div>
-          <p className="text-gray-400 text-sm">Status</p>
-          <p className="text-blue-400 font-semibold">
-            {chamado.status}
-          </p>
-        </div>
+            <div>
+              <p className="text-gray-400 text-sm">Status</p>
+              <p className={`${renderStatusColor(chamado.status)} font-semibold text-lg`}>
+                {chamado.status}
+              </p>
+            </div>
+
+            {tecnicoAtribuido && (
+              <div>
+                <p className="text-gray-400 text-sm">Técnico responsável</p>
+                <p className="text-white font-semibold text-lg">
+                  {tecnicoAtribuido.nome}
+                </p>
+              </div>
+            )}
+
+          </div>
+
+          {/* DESCRIÇÃO */}
+          <div className="border-t border-gray-800 pt-4">
+            <p className="text-gray-400 text-sm mb-1">Descrição</p>
+            <p className="text-white leading-relaxed">
+              {chamado.descricao}
+            </p>
+          </div>
+
+          {/* ENDEREÇO */}
+          <div className="border-t border-gray-800 pt-4">
+            <p className="text-gray-400 text-sm mb-1">Endereço</p>
+            <p className="text-white">
+              {chamado.endereco}
+            </p>
+          </div>
+
+</div>
 
         {user?.role === 'central' && chamado.status === 'ABERTO' && (
           <div className="mt-4">
-            <p className="text-red-400">
-              Role: {user?.role} | Status: {chamado.status}
-            </p>
-
-
             <select
               onChange={(e) => atribuirTecnico(Number(e.target.value))}
               defaultValue=''
