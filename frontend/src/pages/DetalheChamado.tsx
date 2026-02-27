@@ -9,7 +9,10 @@ interface Chamado {
   descricao: string;
   endereco: string;
   status: string;
-  tecnico_id?: number | null;
+  tecnico?: {
+    id: number;
+    nome: string;
+  } | null;
 }
 
 interface User {
@@ -24,14 +27,16 @@ export default function DetalheChamado() {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
   const [tecnicos, setTecnicos] = useState<User[]>([]);
-  const [tecnicoAtribuido, setTecnicoAtribuido] = useState<User | null>(null);
 
   async function finalizarChamado() {
+    if (!chamado) return;
+
     try {
       await api.put(`/chamados/${chamado?.id}/finalizar`);
       await carregarChamado();
     } catch (error) {
-      alert('Erro ao finalizar chamado')
+      console.error(error);
+      alert('Erro ao finalizar chamado');
     }
   }
 
@@ -45,38 +50,26 @@ export default function DetalheChamado() {
   }
 
   async function carregarChamado() {
-    const response = await api.get(`/chamados/`);
-    const encontrado = response.data.find(
-      (c: Chamado) => c.id === Number(id)
-    );
-
-    setChamado(encontrado);
-
-    if (encontrado?.tecnico_id) {
-      const responseTecnicos = await api.get('/usuarios/tecnicos');
-      const tecnico = responseTecnicos.data.find(
-        (t: User) => t.id === encontrado.tecnico_id
-      );
-      setTecnicoAtribuido(tecnico || null);
-    }
+    const response = await api.get(`/chamados/${id}`);
+    setChamado(response.data);
   }
 
   useEffect(() => {
-    async function carregarDados() {
-      const userResponse = await api.get("/usuarios/me");
-      const usuarioLogado = userResponse.data;
-      setUser(usuarioLogado);
+  async function carregarDados() {
+    const userResponse = await api.get("/usuarios/me");
+    const usuarioLogado = userResponse.data;
+    setUser(usuarioLogado);
 
-      await carregarChamado();
+    await carregarChamado();
 
-      if (usuarioLogado.role === 'central') {
-        const responseTecnicos = await api.get('/usuarios/tecnicos');
-        setTecnicos(responseTecnicos.data);
-      }
+    if (usuarioLogado.role === "central") {
+      const responseTecnicos = await api.get("/usuarios/tecnicos");
+      setTecnicos(responseTecnicos.data);
     }
+  }
 
-    carregarDados();
-  }, []);
+  carregarDados();
+}, []);
 
   if (!chamado) {
     return (
@@ -106,7 +99,6 @@ export default function DetalheChamado() {
       </h2>
 
       <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-6">
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-6">
 
           {/* TÍTULO */}
           <div>
@@ -125,11 +117,11 @@ export default function DetalheChamado() {
               </p>
             </div>
 
-            {tecnicoAtribuido && (
+            {chamado.tecnico && (
               <div>
                 <p className="text-gray-400 text-sm">Técnico responsável</p>
                 <p className="text-white font-semibold text-lg">
-                  {tecnicoAtribuido.nome}
+                  {chamado.tecnico.nome}
                 </p>
               </div>
             )}
@@ -182,7 +174,6 @@ export default function DetalheChamado() {
             Finalizar Chamado
           </button>
         )}
-        </div>
     </Layout>
   );
 }
