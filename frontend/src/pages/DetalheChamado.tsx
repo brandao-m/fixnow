@@ -24,6 +24,15 @@ export default function DetalheChamado() {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
+  async function finalizarChamado() {
+    try {
+      await api.put(`/chamados/${chamado?.id}/finalizar`);
+      await carregarChamado();
+    } catch (error) {
+      alert('Erro ao finalizar chamado')
+    }
+  }
+
   async function carregarChamado() {
     const response = await api.get(`/chamados/`);
     const encontrado = response.data.find(
@@ -84,6 +93,16 @@ export default function DetalheChamado() {
             {chamado.status}
           </p>
         </div>
+
+        {user?.role === 'tecnico' && chamado.status === 'EM_ANDAMENTO' && (
+          <button 
+            onClick={finalizarChamado}
+            className="mt-4 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md font-semibold transition"
+          >
+            Finalizar Chamado
+          </button>
+        )}
+
       </div>
     </Layout>
   );
