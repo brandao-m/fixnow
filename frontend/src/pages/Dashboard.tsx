@@ -238,6 +238,7 @@ export default function Dashboard() {
               {user?.role === "central" && chamado.status === "ABERTO" && (
                 <div className="mt-4">
                   <select
+                    onClick={(e) => e.stopPropagation()}
                     onChange={(e) =>
                       atribuirTecnico(chamado.id, Number(e.target.value))
                     }

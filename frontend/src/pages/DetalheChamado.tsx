@@ -23,6 +23,7 @@ export default function DetalheChamado() {
   const [chamado, setChamado] = useState<Chamado | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
+  const [tecnicos, setTecnicos] = useState<User[]>([]);
 
   async function finalizarChamado() {
     try {
@@ -31,6 +32,15 @@ export default function DetalheChamado() {
     } catch (error) {
       alert('Erro ao finalizar chamado')
     }
+  }
+
+  async function atribuirTecnico(tecnicoId: number) {
+    try {
+      await api.put(`/chamados/${chamado?.id}/atribuir/${tecnicoId}`);
+      await carregarChamado();
+    } catch (error) {
+      alert('Erro ao atribuir técnico');
+    } 
   }
 
   async function carregarChamado() {
@@ -44,8 +54,15 @@ export default function DetalheChamado() {
   useEffect(() => {
     async function carregarDados() {
       const userResponse = await api.get("/usuarios/me");
-      setUser(userResponse.data);
+      const usuarioLogado = userResponse.data;
+      setUser(usuarioLogado);
+
       await carregarChamado();
+
+      if (usuarioLogado.role === 'central') {
+        const responseTecnicos = await api.get('/usuarios/tecnicos');
+        setTecnicos(responseTecnicos.data);
+      }
     }
 
     carregarDados();
@@ -94,6 +111,31 @@ export default function DetalheChamado() {
           </p>
         </div>
 
+        {user?.role === 'central' && chamado.status === 'ABERTO' && (
+          <div className="mt-4">
+            <p className="text-red-400">
+              Role: {user?.role} | Status: {chamado.status}
+            </p>
+
+
+            <select
+              onChange={(e) => atribuirTecnico(Number(e.target.value))}
+              defaultValue=''
+              className="bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-md"
+            >
+              <option value='' disabled>
+                Selecionar Técnico
+              </option>
+
+              {tecnicos.map((tecnico) => (
+                <option key={tecnico.id} value={tecnico.id}>
+                  {tecnico.nome}
+                </option>
+              ))}
+             </select>
+             </div>
+        )}
+
         {user?.role === 'tecnico' && chamado.status === 'EM_ANDAMENTO' && (
           <button 
             onClick={finalizarChamado}
@@ -102,8 +144,7 @@ export default function DetalheChamado() {
             Finalizar Chamado
           </button>
         )}
-
-      </div>
+        </div>
     </Layout>
   );
 }
