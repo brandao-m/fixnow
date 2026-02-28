@@ -29,6 +29,7 @@ export default function Dashboard() {
   const [endereco, setEndereco] = useState("");
 
   const [tecnicos, setTecnicos] = useState<User[]>([]);
+  const [erro, setErro] = useState<string | null>(null);
 
   async function carregarChamados() {
     const response = await api.get("/chamados/");
@@ -52,7 +53,7 @@ export default function Dashboard() {
         }
 
       } catch (error) {
-        alert('Erro ao carregar dados')
+        setErro('Erro ao carregar dados')
       }
     }
       carregarDados();
@@ -73,7 +74,7 @@ export default function Dashboard() {
 
       await carregarChamados();
     } catch (error) {
-      alert("Erro ao criar chamado");
+      setErro("Erro ao criar chamado");
     }
   }
 
@@ -82,7 +83,7 @@ export default function Dashboard() {
     await api.put(`/chamados/${chamadoId}/atribuir/${tecnicoId}`);
     await carregarChamados();
   } catch (error) {
-    alert("Erro ao atribuir técnico");
+    setErro("Erro ao atribuir técnico");
   }
 }
 
@@ -91,7 +92,7 @@ export default function Dashboard() {
       await api.put(`/chamados/${id}/finalizar`);
       await carregarChamados();
     } catch (error) {
-      alert('Erro ao finalizar chamado')
+      setErro('Erro ao finalizar chamado')
     }
   }
 
@@ -158,6 +159,12 @@ export default function Dashboard() {
         <h2 className="text-3xl font-bold text-blue-400">
           Dashboard
         </h2>
+
+        {erro && (
+          <div className="mb-6 bg-red-500/20 border border-red-500 text-red-400 px-4 py-3 rounded-md">
+            {erro}
+          </div>
+        )}
 
         {user?.role === "cliente" && (
           <button

@@ -27,6 +27,7 @@ export default function DetalheChamado() {
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
   const [tecnicos, setTecnicos] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
 
   async function finalizarChamado() {
     if (!chamado) return;
@@ -50,14 +51,14 @@ export default function DetalheChamado() {
   }
 
   async function carregarChamado() {
-  try {
-    const response = await api.get(`/chamados/${id}`);
-    setChamado(response.data);
-  } catch (error) {
-    console.error(error);
-    setChamado(null);
-    alert("Você não tem permissão para visualizar este chamado.");
-    navigate("/dashboard");
+    try {
+      setLoading(true);
+      const response = await api.get(`/chamados/${id}`);
+      setChamado(response.data);
+  }   catch (error) {
+      navigate("/dashboard");
+  }   finally {
+      setLoading(false);
   }
 }
 
@@ -78,7 +79,7 @@ export default function DetalheChamado() {
   carregarDados();
 }, []);
 
-  if (!chamado) {
+  if (loading || !chamado) {
     return (
       <Layout user={user}>
         <p className="text-gray-400">Carregando...</p>
@@ -128,7 +129,7 @@ export default function DetalheChamado() {
               <div>
                 <p className="text-gray-400 text-sm">Técnico responsável</p>
                 <p className="text-white font-semibold text-lg">
-                  {chamado.tecnico.nome}
+                  {chamado.tecnico?.nome}
                 </p>
               </div>
             )}
