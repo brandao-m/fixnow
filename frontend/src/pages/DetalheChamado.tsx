@@ -50,9 +50,16 @@ export default function DetalheChamado() {
   }
 
   async function carregarChamado() {
+  try {
     const response = await api.get(`/chamados/${id}`);
     setChamado(response.data);
+  } catch (error) {
+    console.error(error);
+    setChamado(null);
+    alert("Você não tem permissão para visualizar este chamado.");
+    navigate("/dashboard");
   }
+}
 
   useEffect(() => {
   async function carregarDados() {

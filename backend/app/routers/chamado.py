@@ -14,9 +14,9 @@ from app.services.chamado_service import(
 router = APIRouter(prefix="/chamados", tags=["Chamados"])
 
 # =========================
-# OBTER CHAMADOS
+# OBTER CHAMADO
 # =========================
-@router.get('/{chamado_id}')
+@router.get("/{chamado_id}")
 def obter_chamado(
     chamado_id: int,
     db: Session = Depends(get_session),
@@ -25,36 +25,43 @@ def obter_chamado(
     chamado = db.get(Chamado, chamado_id)
 
     if not chamado:
-        raise
-    HTTPException(status_code=404,
-                  detail='Chamado não encontrado')
-    
+        raise HTTPException(
+            status_code=404,
+            detail="Chamado não encontrado"
+        )
+
     # REGRAS DE AUTORIZAÇÃO
-    if current_user.role == 'cliente' and chamado.cliente_id != current_user.id:
-        raise
-    HTTPException(status_code=403,
-                  detail='Acesso negado')
-    
-    if current_user.role == 'tecnico' and chamado.tecnico_id != current_user.id:
-        raise
-    HTTPException(status_code=403,
-                  detail='Acesso negado')
-    
+    if current_user.role == UserRole.CLIENTE:
+        if chamado.cliente_id != current_user.id:
+            raise HTTPException(
+                status_code=403,
+                detail="Acesso negado"
+            )
+
+    elif current_user.role == UserRole.TECNICO:
+        if chamado.tecnico_id != current_user.id:
+            raise HTTPException(
+                status_code=403,
+                detail="Acesso negado"
+            )
+
+    # CENTRAL PODE VER TUDO → NÃO PRECISA VALIDAR
+
     tecnico = None
     if chamado.tecnico_id:
         tecnico = db.get(User, chamado.tecnico_id)
 
-        return {
-            'id': chamado.id,
-            'titulo': chamado.titulo,
-            'descricao': chamado.descricao,
-            'endereco': chamado.endereco,
-            'status': chamado.status,
-            'tecnico': {
-                'id': tecnico.id,
-                'nome': tecnico.nome
-            } if tecnico else None
-        }
+    return {
+        "id": chamado.id,
+        "titulo": chamado.titulo,
+        "descricao": chamado.descricao,
+        "endereco": chamado.endereco,
+        "status": chamado.status,
+        "tecnico": {
+            "id": tecnico.id,
+            "nome": tecnico.nome
+        } if tecnico else None
+    }
                   
 # =========================
 # LISTAR CHAMADOS
@@ -78,7 +85,6 @@ def listar_chamados(
         ).all()
 
     return chamados
-
 
 # =========================
 # CRIAR CHAMADO
@@ -131,7 +137,6 @@ def finalizar_chamado(
     )
 
 '''
-
 Recebe requisição
 Valida permissão
 Chama service
