@@ -41,23 +41,21 @@ export default function Dashboard() {
       try {
         const userResponse = await api.get("/usuarios/me");
         const usuarioLogado = userResponse.data;
-
         setUser(usuarioLogado);
 
         await carregarChamados();
 
-        // SE FOR CENTRAL, BUSCA TECNICOS
-        if (usuarioLogado.role === 'central') {
-          const responseTecnicos = await api.get('/usuarios/tecnicos');
+        if (usuarioLogado.role === "central") {
+          const responseTecnicos = await api.get("/usuarios/tecnicos");
           setTecnicos(responseTecnicos.data);
         }
-
       } catch (error) {
-        setErro('Erro ao carregar dados')
+        setErro("Erro ao carregar dados");
       }
     }
-      carregarDados();
-    }, []);
+
+    carregarDados();
+  }, []);
 
   async function criarChamado() {
     try {
@@ -79,20 +77,20 @@ export default function Dashboard() {
   }
 
   async function atribuirTecnico(chamadoId: number, tecnicoId: number) {
-  try {
-    await api.put(`/chamados/${chamadoId}/atribuir/${tecnicoId}`);
-    await carregarChamados();
-  } catch (error) {
-    setErro("Erro ao atribuir técnico");
+    try {
+      await api.put(`/chamados/${chamadoId}/atribuir/${tecnicoId}`);
+      await carregarChamados();
+    } catch (error) {
+      setErro("Erro ao atribuir técnico");
+    }
   }
-}
 
-  async function finalizarChamado(id: number){
+  async function finalizarChamado(id: number) {
     try {
       await api.put(`/chamados/${id}/finalizar`);
       await carregarChamados();
     } catch (error) {
-      setErro('Erro ao finalizar chamado')
+      setErro("Erro ao finalizar chamado");
     }
   }
 
@@ -160,12 +158,6 @@ export default function Dashboard() {
           Dashboard
         </h2>
 
-        {erro && (
-          <div className="mb-6 bg-red-500/20 border border-red-500 text-red-400 px-4 py-3 rounded-md">
-            {erro}
-          </div>
-        )}
-
         {user?.role === "cliente" && (
           <button
             onClick={() => setMostrarFormulario(!mostrarFormulario)}
@@ -175,6 +167,13 @@ export default function Dashboard() {
           </button>
         )}
       </div>
+
+      {/* ERRO */}
+      {erro && (
+        <div className="mb-6 bg-red-500/20 border border-red-500 text-red-400 px-4 py-3 rounded-md">
+          {erro}
+        </div>
+      )}
 
       {/* FORMULÁRIO */}
       {user?.role === "cliente" && mostrarFormulario && (
@@ -221,13 +220,23 @@ export default function Dashboard() {
       </h3>
 
       {chamados.length === 0 ? (
-        <p className="text-gray-500">Nenhum chamado encontrado.</p>
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-10 text-center">
+          <p className="text-gray-400 text-lg">
+            Nenhum chamado encontrado.
+          </p>
+
+          {user?.role === "cliente" && (
+            <p className="text-gray-500 text-sm mt-2">
+              Clique em "+ Novo Chamado" para abrir sua primeira solicitação.
+            </p>
+          )}
+        </div>
       ) : (
         <div className="grid gap-4">
           {chamados.map((chamado) => (
             <div
               key={chamado.id}
-              className="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-md hover:shadow-xl transition cursor-pointer"
+              className="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer"
               onClick={() => navigate(`/chamados/${chamado.id}`)}
             >
               <h3 className="text-lg font-semibold text-blue-400">
@@ -241,9 +250,7 @@ export default function Dashboard() {
               <div className="mt-4 flex items-center gap-4">
                 {renderStatusBadge(chamado.status)}
 
-              {/* CENTRAL ATRIBUI TECNICO */}
-              {user?.role === "central" && chamado.status === "ABERTO" && (
-                <div className="mt-4">
+                {user?.role === "central" && chamado.status === "ABERTO" && (
                   <select
                     onClick={(e) => e.stopPropagation()}
                     onChange={(e) =>
@@ -262,13 +269,15 @@ export default function Dashboard() {
                       </option>
                     ))}
                   </select>
-                </div>
-)}    
+                )}
 
                 {user?.role === "tecnico" &&
                   chamado.status === "EM_ANDAMENTO" && (
                     <button
-                      onClick={() => finalizarChamado(chamado.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        finalizarChamado(chamado.id);
+                      }}
                       className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-semibold transition"
                     >
                       Finalizar
