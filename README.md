@@ -95,6 +95,7 @@ Transições de status são controladas na camada de serviço do backend.
 ---
 
 ## Como rodar o projeto
+
 ### Backend
 ```
 cd backend
