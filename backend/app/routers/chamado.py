@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
+from pydantic import BaseModel
 from app.db.db import get_session
 from app.core.security import get_current_user, require_role
 from app.models.user import User, UserRole
@@ -13,6 +14,9 @@ from app.services.chamado_service import(
 )
 
 router = APIRouter(prefix="/chamados", tags=["Chamados"])
+
+class AnaliseRequest(BaseModel):
+    descricao: str
 
 # =========================
 # OBTER CHAMADO
@@ -142,6 +146,6 @@ def finalizar_chamado(
 # IA
 # =========================
 @router.post('/ai/analisar')
-def analisar(descricao: str):
-    resultado = analisar_chamado(descricao)
+def analisar(data: AnaliseRequest):
+    resultado = analisar_chamado(data.descricao)
     return {'resultado': resultado}

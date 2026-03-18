@@ -19,10 +19,3 @@ class Chamado(SQLModel, table=True):
 
     status: StatusChamado = Field(default=StatusChamado.ABERTO)
     data_criacao: datetime = Field(default_factory=datetime.utcnow)
-
-    '''
-    StatusChamado é um ENUM com os status possíveis.
-    cliente_id vai ligar o chamado ao usuário que abriu.
-    tecnico_id é opcional, até que o técnico seja atribuído.
-    data_criacao salva a hora que o chamado foi aberto.
-    '''

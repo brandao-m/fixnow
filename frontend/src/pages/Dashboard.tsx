@@ -119,6 +119,19 @@ export default function Dashboard() {
     }
   }
 
+  async function analisarComIA() {
+    try {
+      const response = await api.post('/chamados/ai/analisar', {
+        descricao,
+      });
+
+      console.log('Resposta IA:', response.data);
+
+    } catch (error) {
+      console.log('Erro ao analisar com IA');
+    }
+  }
+
   const total = chamados.length;
 
   const abertos = chamados.filter(c => c.status === "ABERTO").length;
@@ -217,6 +230,12 @@ export default function Dashboard() {
           onChange={(e) => setEndereco(e.target.value)}
         />
       </div>
+
+      <button
+        onClick={analisarComIA}
+        className="bg-purple-600 hover:bg-purple-700 text-white rounded-md py-2 font-semibold transition">
+        🤖 Analisar com IA
+      </button>
 
       {/* BOTÃO */}
       <button
