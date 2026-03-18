@@ -5,10 +5,15 @@ from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
-def verify_password(password: str, password_hash: str):
-    return pwd_context.verify(password, password_hash)
+def verify_password(password: str, hashed: str):
+    password = password[:72]
+    return pwd_context.verify(password, hashed)
 
 def hash_password(password: str):
+    print("SENHA RECEBIDA:", password)
+    print("TAMANHO:", len(password))
+
+    password = password[:72]
     return pwd_context.hash(password)
 
 def criar_token(data: dict, expires_delta: timedelta | None = None):
