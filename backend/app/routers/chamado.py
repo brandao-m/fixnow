@@ -5,6 +5,7 @@ from app.core.security import get_current_user, require_role
 from app.models.user import User, UserRole
 from app.models.chamado import Chamado, StatusChamado
 from app.schemas.chamado_schema import ChamadoCreate, ChamadoRead
+from app.services.ai_service import analisar_chamado
 from app.services.chamado_service import(
     criar_chamado_service,
     atribuir_tecnico_service,
@@ -136,9 +137,11 @@ def finalizar_chamado(
         tecnico_id=current_user.id
     )
 
-'''
-Recebe requisição
-Valida permissão
-Chama service
-Retorna resposta
-'''
+
+# =========================
+# IA
+# =========================
+@router.post('/ai/analisar')
+def analisar(descricao: str):
+    resultado = analisar_chamado(descricao)
+    return {'resultado': resultado}
