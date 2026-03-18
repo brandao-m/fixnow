@@ -175,42 +175,59 @@ export default function Dashboard() {
 
       {/* FORMULÁRIO */}
       {user?.role === "cliente" && mostrarFormulario && (
-        <div className="bg-gray-900 p-6 rounded-xl shadow-lg mb-10 border border-gray-800">
-          <h3 className="text-xl font-semibold mb-4">
-            Criar Novo Chamado
-          </h3>
+  <div className="bg-gray-900 p-6 rounded-2xl shadow-lg mb-10 border border-gray-800 max-w-2xl">
+    <h3 className="text-xl font-semibold text-white mb-1">
+      Criar novo chamado
+    </h3>
+    <p className="text-gray-400 text-sm mb-6">
+      Descreva o problema com o máximo de detalhes possível
+    </p>
 
-          <div className="flex flex-col gap-3">
-            <input
-              className="bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Título"
-              value={titulo}
-              onChange={(e) => setTitulo(e.target.value)}
-            />
+    <div className="flex flex-col gap-5">
+      
+      {/* TÍTULO */}
+      <div>
+        <label className="text-sm text-gray-400">Título</label>
+        <input
+          className="mt-1 bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Ex: Vazamento na pia"
+          value={titulo}
+          onChange={(e) => setTitulo(e.target.value)}
+        />
+      </div>
 
-            <input
-              className="bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Descrição"
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-            />
+      {/* DESCRIÇÃO */}
+      <div>
+        <label className="text-sm text-gray-400">Descrição</label>
+        <textarea
+          className="mt-1 bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white w-full h-24 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Explique o problema em detalhes..."
+          value={descricao}
+          onChange={(e) => setDescricao(e.target.value)}
+        />
+      </div>
 
-            <input
-              className="bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Endereço"
-              value={endereco}
-              onChange={(e) => setEndereco(e.target.value)}
-            />
+      {/* ENDEREÇO */}
+      <div>
+        <label className="text-sm text-gray-400">Endereço</label>
+        <input
+          className="mt-1 bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Rua, número, bairro..."
+          value={endereco}
+          onChange={(e) => setEndereco(e.target.value)}
+        />
+      </div>
 
-            <button
-              onClick={criarChamado}
-              className="bg-blue-600 hover:bg-blue-700 text-white rounded-md py-2 font-semibold transition"
-            >
-              Criar Chamado
-            </button>
-          </div>
-        </div>
-      )}
+      {/* BOTÃO */}
+      <button
+        onClick={criarChamado}
+        className="mt-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md py-2 font-semibold transition"
+      >
+        Criar chamado
+      </button>
+    </div>
+  </div>
+)}
 
       {/* LISTA */}
       <h3 className="text-2xl font-semibold mb-4">
