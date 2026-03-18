@@ -4,6 +4,8 @@ from sqlmodel import SQLModel
 from app.db.db import engine
 from app.routers.user import router as user_router
 from app.routers.chamado import router as chamado_router
+from dotenv import load_dotenv
+load_dotenv()
 
 app = FastAPI(
     title='FixNow API',

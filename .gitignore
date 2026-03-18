@@ -1,20 +1,50 @@
-# Backend - Python
+# ==============================
+# ENV / SEGURANÇA
+# ==============================
+.env
+.env.*
+backend/.env
+
+# ==============================
+# BACKEND (PYTHON)
+# ==============================
 backend/venv/
 backend/__pycache__/
 backend/*.pyc
-backend/.env
+backend/*.pyo
+backend/*.pyd
+backend/.pytest_cache/
 
-# Frontend - Node
+# ==============================
+# FRONTEND (NODE)
+# ==============================
 frontend/node_modules/
 frontend/dist/
+frontend/.vite/
 
-# IDE
+# ==============================
+# IDE / EDITORES
+# ==============================
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# Logs
+# ==============================
+# LOGS
+# ==============================
 *.log
+logs/
 
-# OS
+# ==============================
+# SISTEMA OPERACIONAL
+# ==============================
 .DS_Store
 Thumbs.db
+
+# ==============================
+# BUILD / CACHE
+# ==============================
+__pycache__/
+*.sqlite3
+*.db

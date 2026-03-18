@@ -1,20 +1,20 @@
-import openai  
-import os 
+from openai import OpenAI
+import os
 
-openai.api_key = os.getenv('OPENAI_API_KEY')
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def analisar_chamado(descricao: str):
     prompt = f"""
-    Você é um assistente técnico de manutenção residencial. 
+    Você é um assistente técnico de manutenção residencial.
 
-    Analise o problema descrito abaixo e retorne:
-    - categoria do profissional (ex: eletricista, encanador)
-    - nível de urgência (baixa, média, alta)
-    - uma descrição melhorada do problema
+    Analise o problema abaixo e retorne:
+    - categoria do profissional
+    - urgência (baixa, média, alta)
+    - descrição melhorada
 
     Problema: {descricao}
 
-    Responda em Json no formato:
+    Responda em JSON:
     {{
         "categoria": "...",
         "urgencia": "...",
@@ -22,13 +22,13 @@ def analisar_chamado(descricao: str):
     }}
     """
 
-    response = openai.ChatCompletion.create(
-        model='gpt-4o-mini',
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
         messages=[
-            {'role': 'system', 'content': 'Você é um especialista em manutenção residencial'},
-            {'role': 'user', 'content': prompt}
+            {"role": "system", "content": "Você é especialista em manutenção."},
+            {"role": "user", "content": prompt},
         ],
-        temerature=0.3,
+        temperature=0.3,
     )
 
-    return response.choices[0].message['content']
+    return response.choices[0].message.content
