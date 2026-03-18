@@ -119,38 +119,36 @@ export default function Dashboard() {
     }
   }
 
+  const total = chamados.length;
+
+  const abertos = chamados.filter(c => c.status === "ABERTO").length;
+
+  const andamento = chamados.filter(c => c.status === "EM_ANDAMENTO").length;
+
+  const concluidos = chamados.filter(c => c.status === "CONCLUIDO").length;
+
   return (
     <Layout user={user}>
+     <div className="p-6 max-w-7xl mx-auto">
       {/* MÉTRICAS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-          <p className="text-gray-400 text-sm">Total</p>
-          <h3 className="text-2xl font-bold text-white">
-            {chamados.length}
-          </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          {[
+            { label: "Total", value: total, color: "text-white" },
+            { label: "Abertos", value: abertos, color: "text-yellow-400" },
+            { label: "Em andamento", value: andamento, color: "text-blue-400" },
+            { label: "Concluídos", value: concluidos, color: "text-green-400" },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-lg transition"
+            >
+              <p className="text-gray-400 text-sm">{item.label}</p>
+              <h3 className={`text-3xl font-bold mt-1 ${item.color}`}>
+                {item.value}
+              </h3>
+            </div>
+          ))}
         </div>
-
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-          <p className="text-gray-400 text-sm">Abertos</p>
-          <h3 className="text-2xl font-bold text-yellow-400">
-            {chamados.filter(c => c.status === "ABERTO").length}
-          </h3>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-          <p className="text-gray-400 text-sm">Em andamento</p>
-          <h3 className="text-2xl font-bold text-blue-400">
-            {chamados.filter(c => c.status === "EM_ANDAMENTO").length}
-          </h3>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-          <p className="text-gray-400 text-sm">Concluídos</p>
-          <h3 className="text-2xl font-bold text-green-400">
-            {chamados.filter(c => c.status === "CONCLUIDO").length}
-          </h3>
-        </div>
-      </div>
 
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
@@ -288,6 +286,7 @@ export default function Dashboard() {
           ))}
         </div>
       )}
+      </div>
     </Layout>
   );
 }
