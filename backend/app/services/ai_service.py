@@ -1,27 +1,37 @@
-from openai import OpenAI
-import os
-
 def analisar_chamado(descricao: str):
-    try:
-        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    descricao_lower = descricao.lower()
 
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "Você é especialista em manutenção."},
-                {"role": "user", "content": descricao},
-            ],
-            temperature=0.3,
-        )
+    # 🔧 CATEGORIA
+    if any(p in descricao_lower for p in ["torneira", "vazamento", "cano", "água"]):
+        categoria = "encanador"
 
-        return response.choices[0].message.content
+    elif any(p in descricao_lower for p in ["luz", "tomada", "fio", "energia", "curto", "disjuntor"]):
+        categoria = "eletricista"
 
-    except Exception as e:
-        print("Erro IA:", e)
+    elif any(p in descricao_lower for p in ["ar condicionado", "geladeira", "freezer"]):
+        categoria = "refrigeração"
 
-        # fallback (simulação)
-        return {
-            "categoria": "encanador",
-            "urgencia": "média",
-            "descricao_melhorada": descricao
-        }
+    elif any(p in descricao_lower for p in ["porta", "portão", "fechadura"]):
+        categoria = "serralheiro"
+
+    else:
+        categoria = "técnico geral"
+
+    # ⚡ URGÊNCIA
+    if any(p in descricao_lower for p in ["urgente", "perigo", "vazando muito", "fogo"]):
+        urgencia = "alta"
+
+    elif any(p in descricao_lower for p in ["não funciona", "quebrou", "parou"]):
+        urgencia = "média"
+
+    else:
+        urgencia = "baixa"
+
+    # 📝 DESCRIÇÃO MELHORADA
+    descricao_melhorada = descricao.capitalize()
+
+    return {
+        "categoria": categoria,
+        "urgencia": urgencia,
+        "descricao_melhorada": descricao_melhorada
+    }
