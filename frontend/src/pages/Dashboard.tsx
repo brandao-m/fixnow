@@ -233,56 +233,66 @@ export default function Dashboard() {
         <div className="grid gap-4">
           {chamados.map((chamado) => (
             <div
-              key={chamado.id}
-              className="bg-gray-900 border border-gray-800 rounded-xl p-5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer"
-              onClick={() => navigate(`/chamados/${chamado.id}`)}
-            >
-              <h3 className="text-lg font-semibold text-blue-400">
-                {chamado.titulo}
-              </h3>
+  key={chamado.id}
+  className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+  onClick={() => navigate(`/chamados/${chamado.id}`)}
+>
+  {/* TOPO */}
+  <div className="flex justify-between items-start">
+    <h3 className="text-lg font-semibold text-white">
+      {chamado.titulo}
+    </h3>
 
-              <p className="text-gray-400 mt-2">
-                {chamado.descricao}
-              </p>
+    {renderStatusBadge(chamado.status)}
+  </div>
 
-              <div className="mt-4 flex items-center gap-4">
-                {renderStatusBadge(chamado.status)}
+  {/* DESCRIÇÃO */}
+  <p className="text-gray-400 mt-3 line-clamp-2">
+    {chamado.descricao}
+  </p>
 
-                {user?.role === "central" && chamado.status === "ABERTO" && (
-                  <select
-                    onClick={(e) => e.stopPropagation()}
-                    onChange={(e) =>
-                      atribuirTecnico(chamado.id, Number(e.target.value))
-                    }
-                    defaultValue=""
-                    className="bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-md"
-                  >
-                    <option value="" disabled>
-                      Selecionar técnico
-                    </option>
+  {/* ENDEREÇO */}
+  <p className="text-xs text-gray-500 mt-3">
+    📍 {chamado.endereco}
+  </p>
 
-                    {tecnicos.map((tecnico) => (
-                      <option key={tecnico.id} value={tecnico.id}>
-                        {tecnico.nome}
-                      </option>
-                    ))}
-                  </select>
-                )}
+  {/* AÇÕES */}
+  <div className="mt-4 flex items-center gap-3">
+    {user?.role === "central" && chamado.status === "ABERTO" && (
+      <select
+        onClick={(e) => e.stopPropagation()}
+        onChange={(e) =>
+          atribuirTecnico(chamado.id, Number(e.target.value))
+        }
+        defaultValue=""
+        className="bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-md text-sm"
+      >
+        <option value="" disabled>
+          Selecionar técnico
+        </option>
 
-                {user?.role === "tecnico" &&
-                  chamado.status === "EM_ANDAMENTO" && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        finalizarChamado(chamado.id);
-                      }}
-                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-semibold transition"
-                    >
-                      Finalizar
-                    </button>
-                  )}
-              </div>
-            </div>
+        {tecnicos.map((tecnico) => (
+          <option key={tecnico.id} value={tecnico.id}>
+            {tecnico.nome}
+          </option>
+        ))}
+      </select>
+    )}
+
+    {user?.role === "tecnico" &&
+      chamado.status === "EM_ANDAMENTO" && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            finalizarChamado(chamado.id);
+          }}
+          className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md text-sm font-semibold transition"
+        >
+          Finalizar
+        </button>
+      )}
+  </div>
+</div>
           ))}
         </div>
       )}
