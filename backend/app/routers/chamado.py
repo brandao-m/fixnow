@@ -72,7 +72,8 @@ def obter_chamado(
 # =========================
 # LISTAR CHAMADOS
 # =========================
-@router.get("/", response_model=list[ChamadoRead])
+@router.get("/")
+@router.get("/")
 def listar_chamados(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user)
@@ -90,7 +91,28 @@ def listar_chamados(
             select(Chamado).where(Chamado.cliente_id == current_user.id)
         ).all()
 
-    return chamados
+    # 👇 NOVA PARTE (IA)
+    resultado = []
+
+    for chamado in chamados:
+        tecnico_sugerido = None
+
+        if chamado.tecnico_sugerido_id:
+            tecnico_sugerido = session.get(User, chamado.tecnico_sugerido_id)
+
+        resultado.append({
+            "id": chamado.id,
+            "titulo": chamado.titulo,
+            "descricao": chamado.descricao,
+            "endereco": chamado.endereco,
+            "status": chamado.status,
+            "tecnico_sugerido": {
+                "id": tecnico_sugerido.id,
+                "nome": tecnico_sugerido.nome
+            } if tecnico_sugerido else None
+        })
+
+    return resultado
 
 # =========================
 # CRIAR CHAMADO
@@ -106,7 +128,8 @@ def criar_chamado(
         titulo=chamado.titulo,
         descricao=chamado.descricao,
         endereco=chamado.endereco,
-        cliente_id=current_user.id
+        cliente_id=current_user.id,
+        tecnico_sugerido_id=chamado.tecnico_sugerido_id
     )
 
 

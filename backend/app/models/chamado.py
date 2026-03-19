@@ -15,7 +15,10 @@ class Chamado(SQLModel, table=True):
     endereco: str
 
     cliente_id: int = Field(foreign_key="user.id")
+
     tecnico_id: Optional[int] = Field(default=None, foreign_key="user.id")
+    
+    tecnico_sugerido_id: Optional[int] = Field(default=None, foreign_key="user.id")
 
     status: StatusChamado = Field(default=StatusChamado.ABERTO)
     data_criacao: datetime = Field(default_factory=datetime.utcnow)

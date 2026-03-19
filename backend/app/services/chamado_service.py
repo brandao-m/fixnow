@@ -8,13 +8,15 @@ def criar_chamado_service(
         titulo: str,
         descricao: str,
         endereco: str,
-        cliente_id: int
+        cliente_id: int,
+        tecnico_sugerido_id: int | None = None
 ):
         novo_chamado = Chamado(
                 titulo=titulo,
                 descricao=descricao,
                 endereco=endereco,
-                cliente_id=cliente_id
+                cliente_id=cliente_id,
+                tecnico_sugerido_id=tecnico_sugerido_id
         )
 
         session.add(novo_chamado)

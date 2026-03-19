@@ -9,6 +9,10 @@ interface Chamado {
   descricao: string;
   endereco: string;
   status: string;
+  tecnico_sugerido?: {
+    id: number,
+    nome: string;
+  };
 }
 
 interface User {
@@ -64,6 +68,7 @@ export default function Dashboard() {
         titulo,
         descricao,
         endereco,
+        tecnico_sugerido_id: analiseIA?.tecnico?.id || null
       });
 
       setTitulo("");
@@ -263,7 +268,6 @@ export default function Dashboard() {
                   <button
                     onClick={() => {
                       setDescricao(analiseIA.descricao_melhorada);
-                      setAnaliseIA(null);
                     }}
                     className="bg-purple-600 px-3 py-1 rounded text-sm"
                   >
@@ -294,6 +298,23 @@ export default function Dashboard() {
             >
               <h3 className="text-white">{chamado.titulo}</h3>
               <p className="text-gray-400">{chamado.descricao}</p>
+              {chamado.tecnico_sugerido && (
+                <p className="text-purple-400 text-sm mt-2">
+                  🤖 Sugestão IA: {chamado.tecnico_sugerido.nome}
+                </p>
+              )}
+
+              {user?.role === "central" && chamado.tecnico_sugerido && chamado.status === "ABERTO" && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    atribuirTecnico(chamado.id, chamado.tecnico_sugerido!.id);
+                  }}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded mt-2 text-sm"
+                >
+                  Aceitar sugestão
+                </button>
+              )}
               {renderStatusBadge(chamado.status)}
             </div>
           ))}

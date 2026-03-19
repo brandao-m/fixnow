@@ -1,11 +1,13 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 from app.models.chamado import StatusChamado
 
 class ChamadoCreate(BaseModel):
     titulo: str
     descricao: str
     endereco: str
+    tecnico_sugerido_id: int | None = None
 
 class ChamadoRead(BaseModel):
     id: int
