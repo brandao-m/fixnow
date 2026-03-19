@@ -13,25 +13,9 @@ class User(SQLModel, table=True):
     email: str = Field(index=True, unique=True) # 1 usuario -> 1 email
     senha_hash: str
     role: UserRole = Field(default=UserRole.CLIENTE)
+    especialidade: Optional[str] = None
 
 
 # id: chave primária
 # nome, email, senha: informações básicas
 # role: define se é Cliente, Técnico ou Central
-
-'''
-CLIENTE:
-Abre chamado
-Vê apenas seus chamados
-
-TECNICO:
-Recebe chamado
-Atualiza status
-Finaliza chamado
-
-CENTRAL -> ADMIN OPERACIONAL
-Gerencia tudo
-Atribui técnico
-Vê todos os chamados
-Atua como "controle operacional"
-'''

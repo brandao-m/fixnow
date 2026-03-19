@@ -4,13 +4,14 @@ from pydantic import BaseModel
 from app.db.db import get_session
 from app.core.security import get_current_user, require_role
 from app.models.user import User, UserRole
-from app.models.chamado import Chamado, StatusChamado
+from app.models.chamado import Chamado
 from app.schemas.chamado_schema import ChamadoCreate, ChamadoRead
 from app.services.ai_service import analisar_chamado
 from app.services.chamado_service import(
     criar_chamado_service,
     atribuir_tecnico_service,
-    finalizar_chamado_service
+    finalizar_chamado_service,
+    sugerir_tecnico
 )
 
 router = APIRouter(prefix="/chamados", tags=["Chamados"])
@@ -146,6 +147,18 @@ def finalizar_chamado(
 # IA
 # =========================
 @router.post('/ai/analisar')
-def analisar(data: AnaliseRequest):
+def analisar(
+    data: AnaliseRequest,
+    session: Session = Depends(get_session)
+):
     resultado = analisar_chamado(data.descricao)
-    return {'resultado': resultado}
+
+    tecnico = sugerir_tecnico(session, resultado['categoria'])
+
+    return {
+        'resultado': resultado,
+        'tecnico_sugerido': {
+            'id': tecnico.id,
+            'nome': tecnico.nome
+        } if tecnico else None
+    }

@@ -65,7 +65,8 @@ def criar_usuario(
         nome=user.nome,
         email=user.email,
         senha_hash=senha_hash,
-        role=user.role
+        role=user.role,
+        especialidade=user.especialidade
     )
 
     session.add(novo_usuario)

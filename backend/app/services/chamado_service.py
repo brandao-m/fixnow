@@ -82,11 +82,14 @@ def finalizar_chamado_service(
 
         return chamado
 
-'''
+def sugerir_tecnico(session, categoria: str):
+        tecnicos = session.exec(
+                select(User).where(
+                        User.role == UserRole.TECNICO,
+                        User.especialidade == categoria
+                )
+        ).all()
 
-Executa regra de negócio
-Acessa banco
-Valida transições
-Centraliza lógica
-
-'''
+        if not tecnicos:
+                return None
+        return tecnicos[0]
