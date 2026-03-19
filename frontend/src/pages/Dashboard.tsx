@@ -69,7 +69,7 @@ export default function Dashboard() {
       setTitulo("");
       setDescricao("");
       setEndereco("");
-      setAnaliseIA(null); // 🔥 limpa IA
+      setAnaliseIA(null);
       setMostrarFormulario(false);
 
       await carregarChamados();
@@ -97,22 +97,27 @@ export default function Dashboard() {
   }
 
   async function analisarComIA() {
-    try {
-      const response = await api.post("/chamados/ai/analisar", {
-        descricao,
-      });
+  try {
+    const response = await api.post("/chamados/ai/analisar", {
+      descricao,
+    });
 
-      const data = response.data.resultado;
+    const resultado = response.data.resultado;
+    const tecnico = response.data.tecnico_sugerido;
 
-      setAnaliseIA(data);
+    setAnaliseIA({
+      ...resultado,
+      tecnico
+    });
 
-      if (!titulo) {
-        setTitulo(data.descricao_melhorada);
-      }
-    } catch (error) {
-      console.error("Erro ao analisar com IA", error);
+    if (!titulo) {
+      setTitulo(resultado.descricao_melhorada);
     }
+
+  } catch (error) {
+    console.error("Erro ao analisar com IA", error);
   }
+}
 
   function renderStatusBadge(status: string) {
     switch (status) {
@@ -181,6 +186,12 @@ export default function Dashboard() {
           )}
         </div>
 
+          {erro && (
+            <div className="bg-red-500/20 text-red-400 p-2 rounded mb-4">
+              {erro}
+            </div>
+          )}
+
         {/* FORMULÁRIO */}
         {user?.role === "cliente" && mostrarFormulario && (
           <div className="bg-gray-900 p-6 rounded-2xl mb-10 border border-gray-800 max-w-2xl">
@@ -242,6 +253,12 @@ export default function Dashboard() {
                   <p className="text-white text-sm mb-2">
                     {analiseIA.descricao_melhorada}
                   </p>
+
+                  {analiseIA.tecnico && (
+                  <p className="text-white text-sm">
+                    👨‍🔧 Técnico sugerido: {analiseIA.tecnico.nome}
+                  </p>
+                   )}
 
                   <button
                     onClick={() => {
