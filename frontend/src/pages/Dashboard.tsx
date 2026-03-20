@@ -15,10 +15,12 @@ interface Chamado {
   };
 }
 
+type UserRole = 'cliente' | 'tecnico' | 'central';
+
 interface User {
   id: number;
   nome: string;
-  role: string;
+  role: UserRole;
 }
 
 export default function Dashboard() {
@@ -45,7 +47,8 @@ export default function Dashboard() {
     async function carregarDados() {
       try {
         const userResponse = await api.get("/usuarios/me");
-        const usuarioLogado = userResponse.data;
+
+        const usuarioLogado = userResponse.data as User;
         setUser(usuarioLogado);
 
         await carregarChamados();
@@ -89,15 +92,6 @@ export default function Dashboard() {
       await carregarChamados();
     } catch {
       setErro("Erro ao atribuir técnico");
-    }
-  }
-
-  async function finalizarChamado(id: number) {
-    try {
-      await api.put(`/chamados/${id}/finalizar`);
-      await carregarChamados();
-    } catch {
-      setErro("Erro ao finalizar chamado");
     }
   }
 
@@ -153,6 +147,10 @@ export default function Dashboard() {
   const abertos = chamados.filter(c => c.status === "ABERTO").length;
   const andamento = chamados.filter(c => c.status === "EM_ANDAMENTO").length;
   const concluidos = chamados.filter(c => c.status === "CONCLUIDO").length;
+
+  function isCentral(user: User | null): boolean {
+    return user?.role === 'central';
+  }
 
   return (
     <Layout user={user}>
@@ -255,24 +253,11 @@ export default function Dashboard() {
                     ⚡ {analiseIA.urgencia}
                   </p>
 
-                  <p className="text-white text-sm mb-2">
-                    {analiseIA.descricao_melhorada}
-                  </p>
-
-                  {analiseIA.tecnico && (
-                  <p className="text-white text-sm">
-                    👨‍🔧 Técnico sugerido: {analiseIA.tecnico.nome}
-                  </p>
-                   )}
-
-                  <button
-                    onClick={() => {
-                      setDescricao(analiseIA.descricao_melhorada);
-                    }}
-                    className="bg-purple-600 px-3 py-1 rounded text-sm"
-                  >
-                    Aplicar
-                  </button>
+                  {isCentral(user) && analiseIA.tecnico && (
+                    <p className="text-white text-sm">
+                      👨‍🔧 Técnico sugerido: {analiseIA.tecnico.nome}
+                    </p>
+                  )}
 
                 </div>
               )}
@@ -298,23 +283,52 @@ export default function Dashboard() {
             >
               <h3 className="text-white">{chamado.titulo}</h3>
               <p className="text-gray-400">{chamado.descricao}</p>
-              {chamado.tecnico_sugerido && (
+              {isCentral(user) && chamado.tecnico_sugerido && (
                 <p className="text-purple-400 text-sm mt-2">
                   🤖 Sugestão IA: {chamado.tecnico_sugerido.nome}
                 </p>
               )}
-
-              {user?.role === "central" && chamado.tecnico_sugerido && chamado.status === "ABERTO" && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    atribuirTecnico(chamado.id, chamado.tecnico_sugerido!.id);
-                  }}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded mt-2 text-sm"
+              
+              <div
+                  className="flex items-center gap-3 mt-3"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  Aceitar sugestão
-                </button>
-              )}
+
+                  {/* BOTÃO IA */}
+                  {isCentral(user) && chamado.tecnico_sugerido && chamado.status === "ABERTO" && (
+                    <button
+                      onClick={() =>
+                        atribuirTecnico(chamado.id, chamado.tecnico_sugerido!.id)
+                      }
+                      className="bg-purple-600 hover:bg-purple-700 transition px-3 py-1 rounded text-sm"
+                    >
+                      Aceitar sugestão
+                    </button>
+                  )}
+
+                  {/* SELECT MANUAL */}
+                  {isCentral(user) && chamado.status === "ABERTO" && (
+                    <select
+                      onChange={(e) =>
+                        atribuirTecnico(chamado.id, Number(e.target.value))
+                      }
+                      defaultValue=""
+                      className="bg-gray-800 border border-gray-700 text-white px-2 py-1 rounded text-sm"
+                    >
+                      <option value="" disabled>
+                        Escolher técnico
+                      </option>
+
+                      {tecnicos.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          {t.nome}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+
+                </div>
+
               {renderStatusBadge(chamado.status)}
             </div>
           ))}
