@@ -10,7 +10,7 @@ interface Chamado {
   endereco: string;
   status: string;
   tecnico_sugerido?: {
-    id: number,
+    id: number;
     nome: string;
   };
 }

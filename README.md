@@ -1,123 +1,119 @@
-# FixNow
-Plataforma fullstack para gestão de chamados técnicos, com autenticação JWT e controle de acesso por perfil.
+# FixNow — Sistema de Gestão de Chamados com IA
+O FixNow é um sistema full stack para gestão de chamados técnicos, com priorização inteligente e sugestão automática de profissionais.
 
 ---
 
-## Visão Geral
-O FixNow é um sistema de gerenciamento de chamados técnicos desenvolvido com arquitetura moderna, separação de responsabilidades e foco em segurança.
+## Objetivo
+Simular um sistema real utilizado por empresas para:
 
-O sistema permite:
-
-    -Clientes abrirem chamados
-    -Central administrativa atribuir técnicos
-    -Técnicos finalizarem atendimentos
-    -Controle de acesso por perfil (CLIENTE, TECNICO, CENTRAL)
-    -Autenticação via JWT
-    -Proteção de rotas no frontend
+- abertura de chamados por clientes
+- análise automática com IA
+- sugestão de técnico adequado
+- decisão da central
+- acompanhamento do fluxo do atendimento
 
 ---
 
-## Arquitetura
-```
-fixnow/
-│
-├── backend/ # API REST (FastAPI + SQLModel + PostgreSQL)
-├── frontend/ # Interface (React + TypeScript + Vite)
-└── README.md
-```
+## ⚙️ Tecnologias
+### Backend
+- FastAPI
+- SQLModel
+- PostgreSQL
 
-## Backend
-- FastAPI  
-- SQLModel  
-- PostgreSQL  
-- JWT Authentication  
-- OAuth2 Password Flow  
-
-Arquitetura em camadas:
-- `routers` → definição dos endpoints
-- `services` → regras de negócio
-- `models` → entidades do banco
-- `schemas` → validação e serialização
-- `core` → segurança e configurações
-
----
-
-## Frontend
+### Frontend
 - React
-- TypeScript  
-- Vite  
-- TailwindCSS  
-- Consumo de API via token JWT 
-- Renderização dinâmica baseada no perfil do usuário 
+- TypeScript
+- TailwindCSS
 
 ---
 
-## Controle de Acesso
-O sistema possui três níveis de acesso:
+## Funcionalidades principais
+### Cliente
+- Criação de chamados
+- Análise com IA (categoria + urgência)
+- Interface simples e direta
 
-**CLIENTE**  
-→ Pode abrir e visualizar seus próprios chamados  
+### Inteligência Artificial
+- Classificação do problema
+- Definição de urgência
+- Sugestão de tipo de profissional
 
-**TECNICO**  
-→ Visualiza apenas chamados atribuídos a ele  
-→ Pode finalizar chamados em andamento  
+### Central
+- Visualização de todos os chamados
+- Sugestão automática de técnico
+- Possibilidade de:
+  - aceitar sugestão da IA
+  - escolher técnico manualmente
 
-**CENTRAL**  
-→ Pode visualizar todos os chamados  
-→ Pode atribuir técnicos  
+### Técnico
+- Visualização de chamados atribuídos
+- Atualização de status
 
 ---
 
-## Fluxo Operacional
-1. Cliente cria chamado → `ABERTO`
-2. Central atribui técnico → `EM_ANDAMENTO`
-3. Técnico finaliza atendimento → `CONCLUIDO`
+## Fluxo do sistema
 
-Transições de status são controladas na camada de serviço do backend.
+1. Cliente abre chamado
+2. IA analisa descrição
+3. Sistema sugere técnico
+4. Central decide:
+   - aceita sugestão
+   - ou escolhe outro técnico
+5. Técnico executa atendimento
 
 ---
 
-## Screenshots
+## Diferenciais do projeto
 
-### Login
-![Login](frontend/screenshots/login.png)
-### Dashboard Cliente
-![Dashboard Cliente](frontend/screenshots/dashboard-cliente.png)
+- Separação de responsabilidades (backend / frontend / services)
+- Controle de acesso por roles (cliente, técnico, central)
+- Integração com IA para tomada de decisão
+- Simulação de regras reais de negócio
+- UI limpa e funcional
 
-### Dashboard Central
-![Dashboard Central](frontend/screenshots/dashboard-central.png)
+---
 
-### Dashboard Técnico
-![Dashboard Tecnico](frontend/screenshots/dashboard-tecnico.png)
+## Demonstração do sistema
+### Dashboard da Central
+![Dashboard Central](./frontend/screenshots/dashboard-central.png)
 
-### Detalhe do Chamado
-![Detalhe do Chamado](frontend/screenshots/detalhe-chamado.png)
+---
+
+### Cliente abrindo chamado com IA
+![Chamado Cliente](./frontend/screenshots/chamado-cliente.png)
+
+---
+
+### Central analisando e decidindo
+![Central Decisão](./frontend/screenshots/central-decisao.png)
+
+---
+
+### Dashboard do Técnico
+![Dashboard Técnico](./frontend/screenshots/dashboard-tecnico.png)
+
+---
+
+### Finalização do chamado
+![Finalizacao Técnico](./frontend/screenshots/finaliza-chamado-tecnico.png)
+
 ---
 
 ## Como rodar o projeto
-
 ### Backend
 ```
 cd backend
-python -m venv venv
-venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
-
 ### Frontend
 ```
 cd frontend
 npm install
 npm run dev
 ```
+
 ---
 
-### Objetivo do Projeto
-Este projeto foi desenvolvido como:
-- Demonstração de arquitetura backend profissional
-- Exercício de autenticação e autorização com JWT
-- Base estruturada para futura evolução como SaaS
-
-### Autor
-Marcus Brandão //Backend Dev (Python|APIs REST|Arquitetura)
+## Autor
+Marcus Brandão - https://github.com/brandao-m
